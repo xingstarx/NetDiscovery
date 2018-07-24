@@ -3,8 +3,7 @@ package com.cv4j.netdiscovery.example.wdj;
 import com.cv4j.netdiscovery.core.Spider;
 import com.cv4j.netdiscovery.core.domain.Request;
 import com.cv4j.netdiscovery.core.domain.ResultItems;
-import com.cv4j.netdiscovery.core.downloader.file.FileDownloadAfterRequest;
-import com.cv4j.netdiscovery.core.downloader.file.FileDownloader;
+import com.cv4j.netdiscovery.core.downloader.file.LargeFileDownloader;
 import com.cv4j.netdiscovery.core.pipeline.Pipeline;
 
 import org.jsoup.nodes.Element;
@@ -48,13 +47,11 @@ public class AppPipeline implements Pipeline {
 
         System.out.println("newDownloadUrl == " + newDownloadUrl);
         Request request = new Request(newDownloadUrl);
-        request.afterRequest(new FileDownloadAfterRequest("test",
-                appName + "-" + System.currentTimeMillis() + ".apk")); // 在使用FileDownloader时，可以使用AfterRequest或者Pipeline对文件进行保存等处理。这里使用FileDownloadAfterRequest
+        request.putExtra(LargeFileDownloader.ARG_FILENAME, appName + "-" + System.currentTimeMillis() + ".apk"); // 在使用FileDownloader时，可以使用AfterRequest或者Pipeline对文件进行保存等处理。这里使用FileDownloadAfterRequest
         Spider.create().name("wandoujia_download")
                 .request(request)
-                .downloader(new FileDownloader()) // 文件的下载需要使用FileDownloader
+                .downloader(new LargeFileDownloader("test")) // 文件的下载需要使用FileDownloader
                 .run();
-
     }
 
 
